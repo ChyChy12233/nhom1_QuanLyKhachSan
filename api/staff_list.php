@@ -27,7 +27,7 @@ $result = mysqli_query($conn, $sql);
 <html>
 <head>
     <title>Danh sách nhân viên</title>
-    <link rel="stylesheet" href="staff.css">
+    <link rel="stylesheet" href="../staff.css">
 </head>
 
 <body>

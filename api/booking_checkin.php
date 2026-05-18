@@ -7,7 +7,7 @@
 
     <title>Đặt phòng</title>
 
-    <link rel="stylesheet" href="booking.css">
+    <link rel="stylesheet" href="../booking.css">
 
 </head>
 

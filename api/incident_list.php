@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Quản lý sự cố</title>
 
-    <link rel="stylesheet" href="incident.css">
+    <link rel="stylesheet" href="../incident.css">
 </head>
 
 <body>

@@ -30,7 +30,7 @@ $result = mysqli_query($conn, $sql);
 <html>
 <head>
     <title>Danh sách phòng</title>
-    <link rel="stylesheet" href="staff.css">
+    <link rel="stylesheet" href="../staff.css">
 </head>
 
 <body>

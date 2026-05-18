@@ -10,7 +10,7 @@ $conn = mysqli_connect("localhost","root","","hotel");
 
     <title>Gửi báo cáo sự cố</title>
 
-    <link rel="stylesheet" href="incident.css">
+    <link rel="stylesheet" href="../incident.css">
 </head>
 
 <body>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Quản lý hóa đơn</title>
 
-    <link rel="stylesheet" href="invoice.css">
+    <link rel="stylesheet" href="../invoice.css">
 </head>
 
 <body>

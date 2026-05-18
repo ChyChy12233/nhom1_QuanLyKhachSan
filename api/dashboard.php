@@ -18,7 +18,7 @@ $role = strtolower(trim($_SESSION['role']));
     <meta charset="UTF-8">
     <title>Dashboard</title>
 
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../dashboard.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 

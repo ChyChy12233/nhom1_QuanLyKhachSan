@@ -36,7 +36,7 @@ $result = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
 
     <title>Danh sách khách hàng</title>
-    <link rel="stylesheet" href="customer.css">
+    <link rel="stylesheet" href="../customer.css">
 
 </head>
 
