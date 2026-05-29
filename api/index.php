@@ -86,7 +86,7 @@
             </div>
 
             <div class="forgot">
-              <a href="#">Forgot password?</a>
+              <a href="forgot_password.php">Forgot password?</a>
             </div>
 
             <button type="submit">Sign In</button>

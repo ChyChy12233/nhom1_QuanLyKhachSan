@@ -5,9 +5,9 @@
 
     <meta charset="UTF-8">
 
-    <title>Quản lý sự cố</title>
+    <title>Quản lý loại phòng</title>
 
-    <link rel="stylesheet" href="incident.css">
+    <link rel="stylesheet" href="../room_type.css">
 
 </head>
 
@@ -16,62 +16,62 @@
 <div class="container">
 
     <!-- TITLE -->
-    <h2>Quản lý sự cố</h2>
+    <h2>Quản lý loại phòng</h2>
 
     <!-- STATS -->
     <div class="stats-grid">
 
         <div class="stat-card blue">
 
-            <h3>32</h3>
+            <h3>3</h3>
 
-            <p>Tổng sự cố</p>
-
-        </div>
-
-        <div class="stat-card orange">
-
-            <h3>8</h3>
-
-            <p>Chưa xử lý</p>
+            <p>Tổng loại phòng</p>
 
         </div>
 
         <div class="stat-card green">
 
-            <h3>20</h3>
+            <h3>1</h3>
 
-            <p>Đã xử lý</p>
+            <p>Đang hoạt động</p>
+
+        </div>
+
+        <div class="stat-card orange">
+
+            <h3>1</h3>
+
+            <p>Tạm ngưng</p>
 
         </div>
 
         <div class="stat-card red">
 
-            <h3>4</h3>
+            <h3>1</h3>
 
-            <p>Đã hủy</p>
+            <p>Ngưng hoạt động</p>
 
         </div>
 
     </div>
 
-    <!-- TOP BAR -->
+    <!-- ACTION -->
     <div class="top-bar">
 
         <input
             type="text"
-            placeholder="Tìm mã sự cố..."
+            placeholder="Tìm loại phòng..."
         >
 
         <select>
 
             <option>Tất cả trạng thái</option>
 
-            <option>Chưa xử lý</option>
+            <option>Đang hoạt động</option>
 
-            <option>Đã xử lý</option>
+            <option>Tạm ngưng hoạt động</option>
 
-            <option>Đã hủy</option>
+            <option>Ngưng hoạt động</option>
 
         </select>
 
@@ -83,10 +83,10 @@
 
         <button
             class="add-btn"
-            onclick="openIncidentModal()"
+            onclick="openRoomTypeModal()"
         >
 
-            + Thêm sự cố
+            + Thêm loại phòng
 
         </button>
 
@@ -97,15 +97,11 @@
 
         <tr>
 
-            <th>Mã SC</th>
+            <th>Mã loại phòng</th>
 
-            <th>Nhân viên</th>
+            <th>Tên loại phòng</th>
 
-            <th>Mô tả</th>
-
-            <th>Nguyên nhân</th>
-
-            <th>Ngày gửi</th>
+            <th>Đơn giá</th>
 
             <th>Trạng thái</th>
 
@@ -115,19 +111,15 @@
 
         <tr>
 
-            <td>SC001</td>
+            <td>LP001</td>
 
-            <td>NV001</td>
+            <td>Standard</td>
 
-            <td>Máy lạnh không hoạt động</td>
-
-            <td>Do khách sạn</td>
-
-            <td>2026-05-10</td>
+            <td>500.000đ</td>
 
             <td>
-                <span class="pending">
-                    Chưa xử lý
+                <span class="active">
+                    Đang hoạt động
                 </span>
             </td>
 
@@ -135,7 +127,7 @@
 
                 <button
                     class="edit-btn"
-                    onclick="openIncidentModal()"
+                    onclick="openEditModal()"
                 >
                     Sửa
                 </button>
@@ -153,19 +145,15 @@
 
         <tr>
 
-            <td>SC002</td>
+            <td>LP002</td>
 
-            <td>NV003</td>
+            <td>Deluxe</td>
 
-            <td>Vỡ kính phòng</td>
-
-            <td>Do khách hàng</td>
-
-            <td>2026-05-12</td>
+            <td>900.000đ</td>
 
             <td>
-                <span class="done">
-                    Đã xử lý
+                <span class="pause">
+                    Tạm ngưng hoạt động
                 </span>
             </td>
 
@@ -173,7 +161,7 @@
 
                 <button
                     class="edit-btn"
-                    onclick="openIncidentModal()"
+                    onclick="openEditModal()"
                 >
                     Sửa
                 </button>
@@ -191,19 +179,15 @@
 
         <tr>
 
-            <td>SC003</td>
+            <td>LP003</td>
 
-            <td>NV002</td>
+            <td>Suite</td>
 
-            <td>Khách báo mất remote TV</td>
-
-            <td>Do khách hàng</td>
-
-            <td>2026-05-15</td>
+            <td>1.500.000đ</td>
 
             <td>
-                <span class="cancel">
-                    Đã hủy
+                <span class="inactive">
+                    Ngưng hoạt động
                 </span>
             </td>
 
@@ -211,7 +195,7 @@
 
                 <button
                     class="edit-btn"
-                    onclick="openIncidentModal()"
+                    onclick="openEditModal()"
                 >
                     Sửa
                 </button>
@@ -231,35 +215,33 @@
 
 </div>
 
-<!-- INCIDENT MODAL -->
-<div id="incidentModal" class="modal">
+<!-- ADD / EDIT MODAL -->
+<div id="roomTypeModal" class="modal">
 
     <div class="modal-content">
 
-        <!-- HEADER -->
         <div class="modal-header">
 
-            <h3>Thêm sự cố</h3>
+            <h3>Thêm loại phòng</h3>
 
             <span
                 class="close-btn"
-                onclick="closeIncidentModal()"
+                onclick="closeRoomTypeModal()"
             >
                 ×
             </span>
 
         </div>
 
-        <!-- FORM -->
         <form class="form-grid">
 
             <div class="form-group">
 
-                <label>Mã sự cố</label>
+                <label>Mã loại phòng</label>
 
                 <input
                     type="text"
-                    value="SC004"
+                    value="LP004"
                     readonly
                 >
 
@@ -267,78 +249,37 @@
 
             <div class="form-group">
 
-                <label>Nhân viên</label>
+                <label>Tên loại phòng</label>
 
                 <input
                     type="text"
-                    value="NV001"
-                    readonly
+                    placeholder="Nhập tên loại phòng"
                 >
 
             </div>
 
-            <div class="form-group full">
-
-                <label>Mô tả sự cố</label>
-
-                <textarea
-                    placeholder="Nhập mô tả sự cố"
-                ></textarea>
-
-            </div>
-
             <div class="form-group">
 
-                <label>Nguyên nhân</label>
-
-                <select>
-
-                    <option>Do khách sạn</option>
-
-                    <option>Do khách hàng</option>
-
-                </select>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Giá sửa chữa</label>
+                <label>Đơn giá</label>
 
                 <input
                     type="number"
-                    placeholder="Nhập giá sửa chữa"
+                    placeholder="Nhập đơn giá"
                 >
 
             </div>
 
             <div class="form-group">
-
-                <label>Ngày gửi</label>
-
-                <input type="date">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Ngày xử lý</label>
-
-                <input type="date">
-
-            </div>
-
-            <div class="form-group full">
 
                 <label>Trạng thái</label>
 
                 <select>
 
-                    <option>Chưa xử lý</option>
+                    <option>Đang hoạt động</option>
 
-                    <option>Đã xử lý</option>
+                    <option>Tạm ngưng hoạt động</option>
 
-                    <option>Đã hủy</option>
+                    <option>Ngưng hoạt động</option>
 
                 </select>
 
@@ -349,7 +290,7 @@
                 class="save-btn full"
             >
 
-                Lưu sự cố
+                Lưu loại phòng
 
             </button>
 
@@ -367,7 +308,7 @@
         <h3>Xác nhận xóa</h3>
 
         <p>
-            Bạn chắc chắn muốn xóa sự cố này?
+            Bạn chắc chắn muốn xóa loại phòng này?
         </p>
 
         <div class="delete-actions">
@@ -382,7 +323,7 @@
             <button
                 class="confirm-delete-btn"
             >
-                Xóa sự cố
+                Xóa loại phòng
             </button>
 
         </div>
@@ -393,18 +334,25 @@
 
 <script>
 
-function openIncidentModal(){
+function openRoomTypeModal(){
 
     document
-        .getElementById("incidentModal")
+        .getElementById("roomTypeModal")
         .classList.add("show");
 }
 
-function closeIncidentModal(){
+function closeRoomTypeModal(){
 
     document
-        .getElementById("incidentModal")
+        .getElementById("roomTypeModal")
         .classList.remove("show");
+}
+
+function openEditModal(){
+
+    document
+        .getElementById("roomTypeModal")
+        .classList.add("show");
 }
 
 function openDeleteModal(){

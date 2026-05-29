@@ -24,10 +24,11 @@ $sql = "UPDATE customer SET
 WHERE CustomerId='$id'";
 
 if (mysqli_query($conn, $sql)) {
-    echo "<script>
-        alert('Cập nhật thành công!');
-        window.location='customer_list.php';
-    </script>";
+ header(
+"Location: customer_list.php?updated=1"
+);
+
+exit();
 } else {
     echo "Lỗi: " . mysqli_error($conn);
 }

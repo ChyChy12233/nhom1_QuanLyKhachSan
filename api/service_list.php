@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Quản lý dịch vụ</title>
 
-    <link rel="stylesheet" href="service.css">
+    <link rel="stylesheet" href="../service.css">
 </head>
 
 <body>
@@ -13,7 +13,81 @@
 <div class="service-container">
 
     <h2>Quản lý dịch vụ</h2>
+    <!-- STATS -->
+<div class="stats-grid">
 
+    <!-- TỔNG DỊCH VỤ -->
+    <div class="stat-card blue">
+
+        <h3>Tổng dịch vụ</h3>
+
+        <h1>4</h1>
+
+        <p>Tất cả dịch vụ</p>
+
+    </div>
+
+    <!-- ĂN UỐNG -->
+    <div class="stat-card green">
+
+        <h3>Ăn uống</h3>
+
+        <h1>1</h1>
+
+        <p>Dịch vụ ăn uống</p>
+
+    </div>
+
+    <!-- GIẢI TRÍ -->
+    <div class="stat-card orange">
+
+        <h3>Giải trí</h3>
+
+        <h1>1</h1>
+
+        <p>Dịch vụ giải trí</p>
+
+    </div>
+
+    <!-- TIỆN ÍCH -->
+    <div class="stat-card purple">
+
+        <h3>Tiện ích</h3>
+
+        <h1>2</h1>
+
+        <p>Dịch vụ tiện ích</p>
+
+    </div>
+
+</div>
+
+<!-- STATUS STATS -->
+<div class="stats-grid second-stats">
+
+    <!-- ĐANG HOẠT ĐỘNG -->
+    <div class="stat-card active-card">
+
+        <h3>Đang hoạt động</h3>
+
+        <h1>3</h1>
+
+        <p>Dịch vụ khả dụng</p>
+
+    </div>
+
+    <!-- TẠM NGƯNG -->
+    <div class="stat-card inactive-card">
+
+        <h3>Tạm ngưng</h3>
+
+        <h1>1</h1>
+
+        <p>Dịch vụ ngưng hoạt động</p>
+
+    </div>
+
+</div>
     <!-- ACTION -->
     <div class="top-actions">
 
@@ -30,9 +104,9 @@
         </select>
 
         <button>Tìm</button>
-       <button
+     <button
     class="add-btn"
-    onclick="toggleForm()"
+    onclick="toggleServiceForm()"
 >
     + Dịch vụ mới
 </button>
@@ -131,67 +205,128 @@
 
     </div>
 
-    <!-- RIGHT : FORM -->
-    <div id="serviceForm" class="service-form">
-
-        <h3>Thêm dịch vụ</h3>
-
-        <div class="form-group">
-            <label>Tên dịch vụ</label>
-            <input type="text">
-        </div>
-
-        <div class="form-group">
-            <label>Loại dịch vụ</label>
-
-            <select>
-                <option>Ăn uống</option>
-                <option>Giải trí</option>
-                <option>Tiện ích</option>
-            </select>
-        </div>
-
-       <div class="form-group">
-    <label>Giá dịch vụ</label>
-
-    <select>
-        <option>50.000đ</option>
-        <option>80.000đ</option>
-        <option>100.000đ</option>
-        <option>150.000đ</option>
-        <option>250.000đ</option>
-        <option>300.000đ</option>
-        <option>500.000đ</option>
-    </select>
+  
+  
 </div>
+<!-- SERVICE MODAL -->
+<div id="serviceModal" class="modal">
 
-        <div class="form-group">
-            <label>Trạng thái</label>
+    <div class="modal-content service-modal">
 
-            <select>
-                <option>Đang hoạt động</option>
-                <option>Tạm ngưng</option>
-            </select>
+        <!-- HEADER -->
+        <div class="modal-header">
+
+            <h3>Thêm dịch vụ</h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="toggleServiceForm()"
+            >
+                ×
+            </button>
+
         </div>
 
-        <button class="save-btn">
-            Lưu dịch vụ
-        </button>
+        <!-- FORM -->
+        <form class="service-grid">
+
+            <!-- MÃ DV -->
+            <div class="form-group">
+
+                <label>Mã dịch vụ</label>
+
+                <input
+                    type="text"
+                    value="DV005"
+                    readonly
+                >
+
+            </div>
+
+            <!-- TÊN DV -->
+            <div class="form-group">
+
+                <label>Tên dịch vụ</label>
+
+                <input
+                    type="text"
+                    placeholder="Nhập tên dịch vụ"
+                >
+
+            </div>
+
+            <!-- LOẠI DV -->
+            <div class="form-group">
+
+                <label>Loại dịch vụ</label>
+
+                <select>
+
+                    <option>Ăn uống</option>
+                    <option>Giải trí</option>
+                    <option>Tiện ích</option>
+
+                </select>
+
+            </div>
+
+            <!-- GIÁ -->
+            <div class="form-group">
+
+                <label>Giá dịch vụ</label>
+
+                <input
+                    type="number"
+                    placeholder="Nhập giá dịch vụ"
+                >
+
+            </div>
+
+            <!-- TRẠNG THÁI -->
+            <div class="form-group">
+
+                <label>Trạng thái</label>
+
+                <select>
+
+                    <option>Đang hoạt động</option>
+                    <option>Tạm ngưng</option>
+                    <option>Ngưng hoạt động</option>
+
+                </select>
+
+            </div>
+
+            <!-- BUTTON -->
+            <div class="full">
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    Lưu dịch vụ
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
 </div>
+
 <script>
 
-function toggleForm(){
+function toggleServiceForm(){
 
-    const layout = document.getElementById("serviceLayout");
-    const form = document.getElementById("serviceForm");
-
-    layout.classList.toggle("show-form");
-
+    document
+        .getElementById("serviceModal")
+        .classList
+        .toggle("show");
 }
 
 </script>
+
 </body>
 </html>

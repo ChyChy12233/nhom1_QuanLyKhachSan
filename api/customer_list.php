@@ -1,13 +1,51 @@
 <?php
 $conn = mysqli_connect("localhost","root","","hotel");
-
+$deleted = isset($_GET['deleted']);
+$updated =
+isset($_GET['updated']);
 $keyword = isset($_GET['keyword']) 
 ? mysqli_real_escape_string($conn, $_GET['keyword']) 
 : "";
+/* AUTO CUSTOMER ID */
 
-$type = isset($_GET['type']) 
-? $_GET['type'] 
-: "";
+$getLast = mysqli_query(
+    $conn,
+    "
+
+    SELECT CustomerId
+
+    FROM customer
+
+    ORDER BY CustomerId DESC
+
+    LIMIT 1
+
+    "
+);
+
+if(mysqli_num_rows($getLast) > 0){
+
+    $lastRow = mysqli_fetch_assoc($getLast);
+
+    $lastId = $lastRow['CustomerId'];
+
+    $number = (int) substr($lastId, 2);
+
+    $number++;
+
+    $nextCustomerId =
+    "KH" .
+    str_pad($number, 3, "0", STR_PAD_LEFT);
+
+}
+else{
+
+    $nextCustomerId = "KH001";
+}
+$level =
+isset($_GET['level'])
+? $_GET['level']
+: '';
 
 $sql = "SELECT * FROM customer WHERE 1";
 
@@ -20,11 +58,22 @@ if ($keyword != "") {
     )";
 }
 
-if ($type != "") {
+if($level != ""){
 
-    $sql .= " AND CustomerType='$type'";
+    if($level == "VIP"){
+
+        $sql .= " AND StayCount >= 10";
+    }
+    else if($level == "Regular"){
+
+        $sql .= " AND StayCount >= 5
+                  AND StayCount < 10";
+    }
+    else{
+
+        $sql .= " AND StayCount < 5";
+    }
 }
-
 $result = mysqli_query($conn, $sql);
 ?>
 
@@ -57,28 +106,33 @@ $result = mysqli_query($conn, $sql);
                 placeholder="Tìm khách..."
                 value="<?= $keyword ?>"
             >
+<select name="level">
 
-            <select name="type">
+<option value="">
+    Lọc hạng khách hàng
+</option>
 
-                <option value="">
-                    -- Tất cả loại --
-                </option>
+<option
+    value="VIP"
+    <?= ($level=='VIP')?'selected':'' ?>
+>
+    VIP
+</option>
 
-                <option
-                    value="Nội địa"
-                    <?= ($type=='Nội địa')?'selected':'' ?>
-                >
-                    Nội địa
-                </option>
+<option
+    value="Regular"
+    <?= ($level=='Regular')?'selected':'' ?>
+>
+    Regular
+</option>
 
-                <option
-                    value="Nước ngoài"
-                    <?= ($type=='Nước ngoài')?'selected':'' ?>
-                >
-                    Nước ngoài
-                </option>
-
-            </select>
+<option
+    value="New"
+    <?= ($level=='New')?'selected':'' ?>
+>
+    New
+</option>
+</select>
 
             <button type="submit">
                 Tìm
@@ -99,13 +153,12 @@ $result = mysqli_query($conn, $sql);
     <table>
 
         <tr>
-           <tr>
-
+        
     <th>ID</th>
 
-    <th>Tên</th>
+    <th>Họ Tên</th>
 
-    <th>SĐT</th>
+    <th>Số Điện Thoại</th>
 
     <th>Email</th>
 
@@ -113,18 +166,30 @@ $result = mysqli_query($conn, $sql);
 
     <th>Tổng chi tiêu</th>
 
-    <th>Hạng KH</th>
+    <th>Hạng Khách Hàng</th>
 
     <th>Action</th>
 
 </tr>
-        </tr>
 
-        <?php if (mysqli_num_rows($result) > 0): ?>
+<?php if (mysqli_num_rows($result) > 0): ?>
 
-            <?php while($row = mysqli_fetch_assoc($result)): ?>
+<?php while($row = mysqli_fetch_assoc($result)): ?>
 
-            <tr>
+       <tr onclick="viewCustomer(
+'<?= $row['CustomerId'] ?>',
+'<?= $row['CustomerName'] ?>',
+'<?= $row['PhoneNumber'] ?>',
+'<?= $row['Email'] ?>',
+'<?= $row['CCCD'] ?>',
+'<?= $row['Birthday'] ?>',
+'<?= $row['Gender'] ?>',
+'<?= $row['CustomerType'] ?>',
+'<?= $row['CustomerAddress'] ?>',
+'<?= $row['Nationality'] ?>',
+'<?= $row['StayCount'] ?>',
+'<?= $row['TotalSpent'] ?>'
+)">
 
                 <td><?= $row['CustomerId'] ?></td>
 
@@ -168,17 +233,36 @@ else{
 </td>
 
                 <td class="action">
+<button
+class="edit"
+onclick="
+event.stopPropagation();
 
-                    <a
-                        href="edit_customer.php?id=<?= $row['CustomerId'] ?>"
-                        class="edit"
-                    >
-                        Sửa
-                    </a>
+openEditCustomer(
+'<?= $row['CustomerId'] ?>',
+'<?= $row['CustomerName'] ?>',
+'<?= $row['PhoneNumber'] ?>',
+'<?= $row['Email'] ?>',
+'<?= $row['CCCD'] ?>',
+'<?= $row['Birthday'] ?>',
+'<?= $row['Gender'] ?>',
+'<?= $row['CustomerAddress'] ?>',
+'<?= $row['Nationality'] ?>',
+'<?= $row['CustomerType'] ?>'
+);
+"
+>
+Sửa
+</button>
 
-                   <button
+<button
     class="delete"
-    onclick="openDeleteModal()"
+    onclick="
+        event.stopPropagation();
+        openDeleteModal(
+            '<?= $row['CustomerId'] ?>'
+        )
+    "
 >
     Xóa
 </button>
@@ -208,11 +292,14 @@ else{
 <!-- MODAL -->
 <div id="customerModal" class="modal">
 
-    <div class="modal-content">
+    <div class="modal-content customer-modal">
 
+        <!-- HEADER -->
         <div class="modal-header">
 
-            <h3>Thêm khách hàng</h3>
+            <h3>
+                Thêm khách hàng
+            </h3>
 
             <span
                 class="close-btn"
@@ -223,75 +310,179 @@ else{
 
         </div>
 
-        <div class="form-group">
+        <!-- FORM -->
+        <form class="form-grid">
 
-            <label>Họ tên</label>
+            <!-- MÃ KH -->
+            <div class="form-group">
 
-            <input type="text">
+                <label>Mã khách hàng</label>
 
-        </div>
+               <input
+    type="text"
+    name="CustomerId"
+    value="<?= $nextCustomerId ?>"
+    readonly
+>
 
-        <div class="form-group">
+            </div>
 
-            <label>CCCD</label>
+            <!-- HỌ TÊN -->
+            <div class="form-group">
 
-            <input type="text">
+                <label>Họ tên</label>
 
-        </div>
+                <input type="text">
 
-        <div class="form-group">
+            </div>
 
-            <label>SĐT</label>
+            <!-- CCCD -->
+            <div class="form-group">
 
-            <input type="text">
+                <label>CCCD</label>
 
-        </div>
+                <input type="text">
 
-        <div class="form-group">
+            </div>
 
-            <label>Email</label>
+            <!-- SDT -->
+            <div class="form-group">
 
-            <input type="email">
+                <label>Số điện thoại</label>
 
-        </div>
+                <input type="text">
 
-        <div class="form-group">
+            </div>
 
-            <label>Quốc tịch</label>
+            <!-- EMAIL -->
+            <div class="form-group">
 
-            <select>
+                <label>Email</label>
 
-                <option>Việt Nam</option>
-                <option>Hàn Quốc</option>
-                <option>Mỹ</option>
+                <input type="email">
 
-            </select>
+            </div>
 
-        </div>
+            <!-- NGÀY SINH -->
+            <div class="form-group">
 
-        <div class="form-group">
+                <label>Ngày sinh</label>
 
-            <label>Phân loại KH</label>
+                <input type="date">
 
-            <option value="">-- Tất cả hạng --</option>
+            </div>
 
-<option value="new">New</option>
+            <!-- GIỚI TÍNH -->
+            <div class="form-group">
 
-<option value="regular">Regular</option>
+                <label>Giới tính</label>
 
-<option value="vip">VIP</option>
-        </div>
+                <select>
 
-        <button class="save-btn">
+                    <option>
+                        Nam
+                    </option>
 
-            Lưu khách hàng
+                    <option>
+                        Nữ
+                    </option>
 
-        </button>
+                </select>
+
+            </div>
+
+            <!-- QUỐC TỊCH -->
+            <div class="form-group">
+
+                <label>Quốc tịch</label>
+
+                <select>
+
+                    <option>
+                        Việt Nam
+                    </option>
+
+                    <option>
+                        Hàn Quốc
+                    </option>
+
+                    <option>
+                        Mỹ
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Địa chỉ</label>
+
+                <input type="text">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Hạng khách hàng</label>
+
+                <input
+                    type="text"
+                    value="New"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Số lần lưu trú</label>
+
+                <input
+                    type="number"
+                    value="0"
+                    readonly
+                >
+
+            </div>
+
+            <!-- CHI TIÊU -->
+            <div class="form-group">
+
+                <label>Tổng chi tiêu</label>
+
+                <input
+                    type="text"
+                    value="0đ"
+                    readonly
+                >
+
+            </div>
+
+            <!-- NGÀY TẠO -->
+            <div class="form-group">
+
+                <label>Ngày tạo</label>
+
+                <input type="date">
+
+            </div>
+
+            <!-- BUTTON -->
+            <button
+                type="submit"
+                class="submit-btn full"
+            >
+
+                Thêm khách hàng
+
+            </form>
 
     </div>
 
 </div>
 
+     
 <script>
 
 function toggleForm(){
@@ -305,80 +496,6 @@ function toggleForm(){
 
 </script>
 <!-- MODAL -->
-<div id="customerModal" class="modal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h3>Thêm khách hàng</h3>
-
-            <span
-                class="close-btn"
-                onclick="toggleForm()"
-            >
-                ×
-            </span>
-
-        </div>
-
-        <form action="" method="POST">
-
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label>Họ tên</label>
-                    <input type="text" name="name">
-                </div>
-
-                <div class="form-group">
-                    <label>CCCD</label>
-                    <input type="text" name="cccd">
-                </div>
-
-                <div class="form-group">
-                    <label>SĐT</label>
-                    <input type="text" name="phone">
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email">
-                </div>
-
-                <div class="form-group">
-                    <label>Quốc tịch</label>
-
-                    <select name="nationality">
-                        <option>Việt Nam</option>
-                        <option>Hàn Quốc</option>
-                        <option>Nhật Bản</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Phân loại KH</label>
-
-                    <select name="type">
-                        <option>Thường</option>
-                        <option>VIP</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                    Lưu khách hàng
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-
-<script>
-
 function toggleForm(){
 
     const modal = document.getElementById("customerModal");
@@ -390,7 +507,11 @@ function toggleForm(){
 </script>
 <!-- DELETE MODAL -->
 <div id="deleteModal" class="delete-modal">
-
+<input
+type="hidden"
+id="deleteCustomerId"
+name="CustomerId"
+>
     <div class="delete-box">
 
         <h3>Xóa khách hàng</h3>
@@ -404,9 +525,37 @@ function toggleForm(){
                 Hủy
             </button>
 
-            <button class="confirm-btn">
-                Xóa
-            </button>
+           <form
+    action="delete_customer.php"
+    method="POST"
+>
+
+    <input
+        type="hidden"
+        id="deleteCustomerId"
+        name="CustomerId"
+    >
+<form
+    action="delete_customer.php"
+    method="POST"
+>
+
+    <input
+        type="hidden"
+        id="deleteCustomerId"
+        name="CustomerId"
+    >
+
+    <button
+        type="submit"
+        class="confirm-btn"
+    >
+        Xóa
+    </button>
+
+</form>
+
+</form>
 
         </div>
 
@@ -415,12 +564,15 @@ function toggleForm(){
 </div>
 <script>
 
-function openDeleteModal(){
+function openDeleteModal(id){
+
+    document
+        .getElementById("deleteCustomerId")
+        .value=id;
 
     document
         .getElementById("deleteModal")
         .classList.add("show");
-
 }
 
 function closeDeleteModal(){
@@ -432,5 +584,724 @@ function closeDeleteModal(){
 }
 
 </script>
+<div id="detailCustomerModal" class="modal">
+
+    <div class="modal-content customer-modal">
+
+        <div class="modal-header">
+
+            <h3>Chi tiết khách hàng</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeDetailCustomer()"
+            >×</span>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Mã KH</label>
+                <input id="dCustomerId" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Họ tên</label>
+                <input id="dCustomerName" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>SĐT</label>
+                <input id="dPhone" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input id="dEmail" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>CCCD</label>
+                <input id="dCCCD" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày sinh</label>
+                <input id="dBirthday" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Giới tính</label>
+                <input id="dGender" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Hạng KH</label>
+                <input id="dType" readonly>
+            </div>
+
+            <div class="form-group full">
+                <label>Địa chỉ</label>
+                <input id="dAddress" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Quốc tịch</label>
+                <input id="dNationality" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số lần lưu trú</label>
+                <input id="dStayCount" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Tổng chi tiêu</label>
+                <input id="dTotalSpent" readonly>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="editCustomerModal" class="modal">
+
+    <div class="modal-content customer-modal">
+
+        <div class="modal-header">
+
+            <h3>Chỉnh sửa khách hàng</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeEditCustomer()"
+            >
+                ×
+            </span>
+
+        </div>
+
+        <form
+            action="update_customer.php"
+            method="POST"
+        >
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Mã khách hàng</label>
+
+                    <input
+                        id="eCustomerId"
+                        name="CustomerId"
+                        readonly
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Họ tên</label>
+
+                    <input
+                        id="eCustomerName"
+                        name="CustomerName"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>SĐT</label>
+
+                    <input
+                        id="ePhone"
+                        name="PhoneNumber"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input
+                        id="eEmail"
+                        name="Email"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>CCCD</label>
+
+                    <input
+                        id="eCCCD"
+                        name="CCCD"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Ngày sinh</label>
+
+                    <input
+                        type="date"
+                        id="eBirthday"
+                        name="Birthday"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Giới tính</label>
+
+                    <select
+                        id="eGender"
+                        name="Gender"
+                    >
+                        <option>Nam</option>
+                        <option>Nữ</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Loại khách</label>
+
+                    <select
+                        id="eType"
+                        name="CustomerType"
+                    >
+                        <option>VIP</option>
+                        <option>Regular</option>
+                        <option>New</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Lưu thay đổi
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<div id="editCustomerModal" class="modal">
+
+    <div class="modal-content customer-modal">
+
+        <div class="modal-header">
+
+            <h3>Chỉnh sửa khách hàng</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeEditCustomer()"
+            >
+                ×
+            </span>
+
+        </div>
+
+        <form
+            action="update_customer.php"
+            method="POST"
+            class="form-grid"
+        >
+
+            <div class="form-group">
+                <label>Mã khách hàng</label>
+
+                <input
+                    id="eCustomerId"
+                    name="CustomerId"
+                    readonly
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Họ tên</label>
+
+                <input
+                    id="eCustomerName"
+                    name="CustomerName"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+
+                <input
+                    id="ePhone"
+                    name="PhoneNumber"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+
+                <input
+                    id="eEmail"
+                    name="Email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>CCCD</label>
+
+                <input
+                    id="eCCCD"
+                    name="CCCD"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Ngày sinh</label>
+
+                <input
+                    type="date"
+                    id="eBirthday"
+                    name="Birthday"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Giới tính</label>
+
+                <select
+                    id="eGender"
+                    name="Gender"
+                >
+                    <option>Nam</option>
+                    <option>Nữ</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Quốc tịch</label>
+
+                <input
+                    id="eNationality"
+                    name="Nationality"
+                >
+            </div>
+
+            <div class="form-group full">
+                <label>Địa chỉ</label>
+
+                <input
+                    id="eAddress"
+                    name="CustomerAddress"
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn full"
+            >
+                Lưu thay đổi
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<div id="successModal" class="modal">
+
+    <div class="success-modal">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h3>Xóa thành công</h3>
+
+        <p>
+            Khách hàng đã được xóa khỏi hệ thống.
+        </p>
+
+        <button
+            onclick="closeSuccessModal()"
+            class="success-btn"
+        >
+            OK
+        </button>
+
+    </div>
+
+</div>
+<div id="editCustomerModal" class="modal">
+
+    <div class="modal-content customer-modal">
+
+        <div class="modal-header">
+
+            <h3>Chỉnh sửa khách hàng</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeEditCustomer()"
+            >
+                ×
+            </span>
+
+        </div>
+
+        <form
+            action="update_customer.php"
+            method="POST"
+            class="form-grid"
+        >
+
+            <div class="form-group">
+
+                <label>Mã KH</label>
+
+                <input
+                    id="eCustomerId"
+                    name="CustomerId"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Họ tên</label>
+
+                <input
+                    id="eCustomerName"
+                    name="CustomerName"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>SĐT</label>
+
+                <input
+                    id="ePhone"
+                    name="PhoneNumber"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    id="eEmail"
+                    name="Email"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>CCCD</label>
+
+                <input
+                    id="eCCCD"
+                    name="CCCD"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Ngày sinh</label>
+
+                <input
+                    type="date"
+                    id="eBirthday"
+                    name="Birthday"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Giới tính</label>
+
+                <select
+                    id="eGender"
+                    name="Gender"
+                >
+                    <option>Nam</option>
+                    <option>Nữ</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Loại KH</label>
+
+                <select
+                    id="eType"
+                    name="CustomerType"
+                >
+                    <option>VIP</option>
+                    <option>Regular</option>
+                    <option>New</option>
+                </select>
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Địa chỉ</label>
+
+                <input
+                    id="eAddress"
+                    name="CustomerAddress"
+                >
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Quốc tịch</label>
+
+                <input
+                    id="eNationality"
+                    name="Nationality"
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn full"
+            >
+                Lưu thay đổi
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<div id="updateSuccessModal" class="modal">
+
+    <div class="success-modal">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h3>Cập nhật thành công</h3>
+
+        <p>
+            Thông tin khách hàng đã được cập nhật.
+        </p>
+
+        <button
+            onclick="closeUpdateSuccessModal()"
+            class="success-btn"
+        >
+            OK
+        </button>
+
+    </div>
+
+</div>
 </body>
+<script>
+
+function viewCustomer(
+id,name,phone,email,
+cccd,birthday,gender,
+type,address,nationality,
+stay,total
+){
+
+    document.getElementById("dCustomerId").value=id;
+    document.getElementById("dCustomerName").value=name;
+    document.getElementById("dPhone").value=phone;
+    document.getElementById("dEmail").value=email;
+    document.getElementById("dCCCD").value=cccd;
+    document.getElementById("dBirthday").value=birthday;
+    document.getElementById("dGender").value=gender;
+    document.getElementById("dType").value=type;
+    document.getElementById("dAddress").value=address;
+    document.getElementById("dNationality").value=nationality;
+    document.getElementById("dStayCount").value=stay;
+    document.getElementById("dTotalSpent").value=total;
+
+    document
+        .getElementById("detailCustomerModal")
+        .classList.add("show");
+}
+
+function closeDetailCustomer(){
+
+    document
+        .getElementById("detailCustomerModal")
+        .classList.remove("show");
+}
+
+</script>
+<script>
+
+function openEditCustomer(
+id,
+name,
+phone,
+email,
+cccd,
+birthday,
+gender,
+address,
+nationality,
+type
+){
+
+    eCustomerId.value=id;
+    eCustomerName.value=name;
+    ePhone.value=phone;
+    eEmail.value=email;
+    eCCCD.value=cccd;
+    eBirthday.value=birthday;
+    eGender.value=gender;
+    eAddress.value=address;
+    eNationality.value=nationality;
+    eType.value=type;
+
+    document
+    .getElementById("editCustomerModal")
+    .classList.add("show");
+}
+
+function closeEditCustomer(){
+
+    document
+    .getElementById("editCustomerModal")
+    .classList.remove("show");
+}
+function closeSuccessModal(){
+
+    window.location.href =
+        "customer_list.php";
+
+}
+function closeEditCustomer(){
+
+    document
+    .getElementById("editCustomerModal")
+    .classList.remove("show");
+
+}
+function copyDataToEditForm(){
+
+    eCustomerId.value =
+        dCustomerId.value;
+
+    eCustomerName.value =
+        dCustomerName.value;
+
+    ePhone.value =
+        dPhone.value;
+
+    eEmail.value =
+        dEmail.value;
+
+    eCCCD.value =
+        dCCCD.value;
+
+    eBirthday.value =
+        dBirthday.value;
+
+    eGender.value =
+        dGender.value;
+
+    eType.value =
+        dType.value;
+
+    closeDetailCustomer();
+
+    openEditCustomer();
+}
+function openEditCustomer(){
+
+    document.getElementById("eCustomerId").value =
+        document.getElementById("dCustomerId").value;
+
+    document.getElementById("eCustomerName").value =
+        document.getElementById("dCustomerName").value;
+
+    document.getElementById("ePhone").value =
+        document.getElementById("dPhone").value;
+
+    document.getElementById("eEmail").value =
+        document.getElementById("dEmail").value;
+
+    document.getElementById("eCCCD").value =
+        document.getElementById("dCCCD").value;
+
+    document.getElementById("eBirthday").value =
+        document.getElementById("dBirthday").value;
+
+    document.getElementById("eGender").value =
+        document.getElementById("dGender").value;
+
+    document.getElementById("eAddress").value =
+        document.getElementById("dAddress").value;
+
+    document.getElementById("eNationality").value =
+        document.getElementById("dNationality").value;
+
+    closeDetailCustomer();
+
+    document
+        .getElementById("editCustomerModal")
+        .classList.add("show");
+}
+
+function closeEditCustomer(){
+
+    document
+        .getElementById("editCustomerModal")
+        .classList.remove("show");
+}
+function closeUpdateSuccessModal(){
+
+    window.location.href =
+        "customer_list.php";
+
+}
+<?php if($updated): ?>
+
+document
+.getElementById("updateSuccessModal")
+.classList.add("show");
+
+<?php endif; ?>
+<?php if($deleted): ?>
+
+document
+.getElementById("successModal")
+.classList.add("show");
+
+<?php endif; ?>
+</script>
+
 </html>

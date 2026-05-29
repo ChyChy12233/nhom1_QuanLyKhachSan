@@ -2,159 +2,454 @@
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
-    <title>Quản lý kho tiện nghi</title>
+
+    <title>Quản lý vật tư</title>
 
     <link rel="stylesheet" href="facility.css">
+
 </head>
 
 <body>
 
-<div class="facility-container">
+<div class="container">
 
-    <h2>Quản lý kho tiện nghi</h2>
+    <!-- TITLE -->
+    <h2>Quản lý vật tư</h2>
 
-    <!-- ACTION -->
-    <div class="top-actions">
+    <!-- STATS -->
+    <div class="stats-grid">
 
-        <input type="text" placeholder="Tìm tiện nghi...">
+        <div class="stat-card blue">
+
+            <h3>125</h3>
+
+            <p>Tổng vật tư</p>
+
+        </div>
+
+        <div class="stat-card green">
+
+            <h3>2.350</h3>
+
+            <p>Số lượng tồn kho</p>
+
+        </div>
+
+        <div class="stat-card orange">
+
+            <h3>15</h3>
+
+            <p>Phiếu nhập hôm nay</p>
+
+        </div>
+
+        <div class="stat-card red">
+
+            <h3>8</h3>
+
+            <p>Vật tư sắp hết</p>
+
+        </div>
+
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+
+        <input
+            type="text"
+            placeholder="Tìm vật tư..."
+        >
 
         <select>
-            <option>Tất cả loại</option>
-            <option>Điện tử</option>
-            <option>Phòng tắm</option>
+
+            <option>Tất cả loại vật tư</option>
+
+            <option>Thiết bị điện</option>
+
+            <option>Thiết bị vệ sinh</option>
+
             <option>Nội thất</option>
+
+            <option>Tiện nghi phòng</option>
+
         </select>
 
-        <button>Tìm</button>
+        <button class="search-btn">
+
+            Tìm kiếm
+
+        </button>
 
         <button
             class="add-btn"
-            onclick="toggleForm()"
+            onclick="openMaterialModal()"
         >
-            + Tiện nghi mới
+
+            + Thêm vật tư
+
+        </button>
+
+        <button
+            class="import-btn"
+            onclick="openImportModal()"
+        >
+
+            + Nhập vật tư
+
         </button>
 
     </div>
 
-    <!-- LAYOUT -->
-    <div id="facilityLayout" class="facility-layout">
+    <!-- TABLE -->
+    <table>
 
-        <!-- TABLE -->
-        <div class="facility-table">
+        <tr>
 
-            <table>
+            <th>Mã VT</th>
 
-                <tr>
-                    <th>Mã TN</th>
-                    <th>Tên tiện nghi</th>
-                    <th>Loại</th>
-                    <th>Số lượng</th>
-                    <th>Trạng thái</th>
-                    <th>Action</th>
-                </tr>
+            <th>Tên vật tư</th>
 
-                <tr>
-                    <td>TN001</td>
-                    <td>Máy sấy tóc</td>
-                    <td>Điện tử</td>
-                    <td>25</td>
+            <th>Loại vật tư</th>
 
-                    <td>
-                        <span class="available">
-                            Còn hàng
-                        </span>
-                    </td>
+            <th>Giá</th>
 
-                    <td>
-                        <a href="#" class="edit-btn">Sửa</a>
-                        <a href="#" class="delete-btn">Xóa</a>
-                    </td>
-                </tr>
+            <th>Tồn kho</th>
 
-                <tr>
-                    <td>TN002</td>
-                    <td>Khăn tắm</td>
-                    <td>Phòng tắm</td>
-                    <td>5</td>
+            <th>Action</th>
 
-                    <td>
-                        <span class="low-stock">
-                            Sắp hết
-                        </span>
-                    </td>
+        </tr>
 
-                    <td>
-                        <a href="#" class="edit-btn">Sửa</a>
-                        <a href="#" class="delete-btn">Xóa</a>
-                    </td>
-                </tr>
+        <tr>
 
-                <tr>
-                    <td>TN003</td>
-                    <td>Mini Bar</td>
-                    <td>Nội thất</td>
-                    <td>0</td>
+            <td>VT001</td>
 
-                    <td>
-                        <span class="out-stock">
-                            Hết hàng
-                        </span>
-                    </td>
+            <td>Máy lạnh</td>
 
-                    <td>
-                        <a href="#" class="edit-btn">Sửa</a>
-                        <a href="#" class="delete-btn">Xóa</a>
-                    </td>
-                </tr>
+            <td>Thiết bị điện</td>
 
-            </table>
+            <td>12.000.000đ</td>
+
+            <td>
+                <span class="stock good">
+                    25
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="openMaterialModal()"
+                >
+                    Sửa
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="openDeleteModal()"
+                >
+                    Xóa
+                </button>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>VT002</td>
+
+            <td>Khăn tắm</td>
+
+            <td>Tiện nghi phòng</td>
+
+            <td>120.000đ</td>
+
+            <td>
+                <span class="stock warning">
+                    5
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="openMaterialModal()"
+                >
+                    Sửa
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="openDeleteModal()"
+                >
+                    Xóa
+                </button>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>VT003</td>
+
+            <td>Đèn ngủ</td>
+
+            <td>Nội thất</td>
+
+            <td>350.000đ</td>
+
+            <td>
+                <span class="stock danger">
+                    2
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="openMaterialModal()"
+                >
+                    Sửa
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="openDeleteModal()"
+                >
+                    Xóa
+                </button>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+<!-- MATERIAL MODAL -->
+<div id="materialModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>Thêm vật tư</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeMaterialModal()"
+            >
+                ×
+            </span>
 
         </div>
 
-        <!-- FORM -->
-        <div id="facilityForm" class="facility-form">
-
-            <h3>Thêm tiện nghi</h3>
+        <form class="form-grid">
 
             <div class="form-group">
-                <label>Tên tiện nghi</label>
-                <input type="text">
+
+                <label>Mã vật tư</label>
+
+                <input
+                    type="text"
+                    value="VT004"
+                    readonly
+                >
+
             </div>
 
             <div class="form-group">
-                <label>Loại tiện nghi</label>
+
+                <label>Tên vật tư</label>
+
+                <input
+                    type="text"
+                    placeholder="Nhập tên vật tư"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Loại vật tư</label>
 
                 <select>
-                    <option>Điện tử</option>
-                    <option>Phòng tắm</option>
+
+                    <option>Thiết bị điện</option>
+
+                    <option>Thiết bị vệ sinh</option>
+
                     <option>Nội thất</option>
+
+                    <option>Tiện nghi phòng</option>
+
                 </select>
+
             </div>
 
             <div class="form-group">
+
+                <label>Giá vật tư</label>
+
+                <input
+                    type="number"
+                    placeholder="Nhập giá"
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="save-btn full"
+            >
+
+                Lưu vật tư
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- IMPORT MODAL -->
+<div id="importModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>Nhập vật tư</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeImportModal()"
+            >
+                ×
+            </span>
+
+        </div>
+
+        <form class="form-grid">
+
+            <div class="form-group">
+
+                <label>Mã phiếu nhập</label>
+
+                <input
+                    type="text"
+                    value="PN001"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Nhân viên nhập</label>
+
+                <input
+                    type="text"
+                    value="NV001"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Ngày nhập</label>
+
+                <input type="date">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Vật tư</label>
+
+                <select>
+
+                    <option>VT001 - Máy lạnh</option>
+
+                    <option>VT002 - Khăn tắm</option>
+
+                    <option>VT003 - Đèn ngủ</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
                 <label>Số lượng</label>
 
-                <select>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                </select>
+                <input
+                    type="number"
+                    placeholder="Nhập số lượng"
+                >
+
             </div>
 
             <div class="form-group">
-                <label>Trạng thái</label>
 
-                <select>
-                    <option>Còn hàng</option>
-                    <option>Sắp hết</option>
-                    <option>Hết hàng</option>
-                </select>
+                <label>Giá nhập</label>
+
+                <input
+                    type="number"
+                    placeholder="Nhập giá nhập"
+                >
+
             </div>
 
-            <button class="save-btn">
-                Lưu tiện nghi
+            <button
+                type="submit"
+                class="save-btn full"
+            >
+
+                Lưu phiếu nhập
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal">
+
+    <div class="delete-modal">
+
+        <h3>Xác nhận xóa</h3>
+
+        <p>
+            Bạn chắc chắn muốn xóa vật tư này?
+        </p>
+
+        <div class="delete-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeDeleteModal()"
+            >
+                Hủy
+            </button>
+
+            <button
+                class="confirm-delete-btn"
+            >
+                Xóa vật tư
             </button>
 
         </div>
@@ -165,12 +460,46 @@
 
 <script>
 
-function toggleForm(){
+function openMaterialModal(){
 
-    const layout = document.getElementById("facilityLayout");
+    document
+        .getElementById("materialModal")
+        .classList.add("show");
+}
 
-    layout.classList.toggle("show-form");
+function closeMaterialModal(){
 
+    document
+        .getElementById("materialModal")
+        .classList.remove("show");
+}
+
+function openImportModal(){
+
+    document
+        .getElementById("importModal")
+        .classList.add("show");
+}
+
+function closeImportModal(){
+
+    document
+        .getElementById("importModal")
+        .classList.remove("show");
+}
+
+function openDeleteModal(){
+
+    document
+        .getElementById("deleteModal")
+        .classList.add("show");
+}
+
+function closeDeleteModal(){
+
+    document
+        .getElementById("deleteModal")
+        .classList.remove("show");
 }
 
 </script>

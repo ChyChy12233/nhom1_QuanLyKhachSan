@@ -1,6 +1,8 @@
 <?php
 $conn = mysqli_connect("localhost","root","","hotel");
 
+/* ================= QUERY ================= */
+
 $sql = "
 
 SELECT 
@@ -28,116 +30,334 @@ ON b.RoomId = r.RoomId
 JOIN room_type rt
 ON r.RoomTypeId = rt.RoomTypeId
 
+ORDER BY b.BookingId DESC
+
 ";
 
 $result = mysqli_query($conn, $sql);
 ?>
 
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Quản lý đặt phòng</title>
+
+    <link rel="stylesheet" href="../booking.css">
+
+</head>
+
+<body>
+
 <div class="booking-container">
 
-<h2>Danh sách đặt phòng</h2>
+    <h2>Danh sách đặt phòng</h2>
 
-<table border="1" cellpadding="10">
+    <!-- TABLE -->
+    <table>
 
-<tr>
+        <tr>
 
-    <th>Phòng</th>
+            <th>Mã đặt phòng</th>
 
-    <th>Khách</th>
+            <th>Phòng</th>
 
-    <th>Ngày nhận</th>
+            <th>Loại phòng</th>
 
-    <th>Ngày trả</th>
+            <th>Khách hàng</th>
 
-    <th>Hạng KH</th>
+            <th>Ngày nhận</th>
 
-    <th>Voucher đề xuất</th>
+            <th>Ngày trả</th>
 
-</tr>
+            <th>Trạng thái</th>
 
-<?php while($row = mysqli_fetch_assoc($result)): ?>
+        </tr>
 
-<?php
+        <?php while($row = mysqli_fetch_assoc($result)): ?>
 
-$customerLevel = "New";
+        <tr
+            onclick="openBookingDetail(
+                '<?= $row['BookingId'] ?>',
+                '<?= $row['CustomerName'] ?>',
+                '<?= $row['RoomNumber'] ?>',
+                '<?= $row['RoomTypeName'] ?>',
+                '<?= $row['CheckInDate'] ?>',
+                '<?= $row['CheckOutDate'] ?>',
+                '<?= $row['SoNguoi'] ?>',
+                '<?= number_format($row['DonGia']) ?>đ',
+                '<?= $row['TrangThai'] ?>'
+            )"
+            style="cursor:pointer;"
+        >
 
-if($row['StayCount'] >= 10){
+            <!-- BOOKING ID -->
+            <td>
 
-    $customerLevel = "VIP";
-}
-else if($row['StayCount'] >= 5){
+                <?= $row['BookingId'] ?>
 
-    $customerLevel = "Regular";
-}
+            </td>
 
-?>
+            <!-- ROOM -->
+            <td>
 
-<tr>
+                <?= $row['RoomNumber'] ?>
 
-    <td><?= $row['RoomNumber'] ?></td>
+            </td>
 
-    <td><?= $row['CustomerName'] ?></td>
+            <!-- ROOM TYPE -->
+            <td>
 
-    <td><?= $row['CheckInDate'] ?></td>
+                <?= $row['RoomTypeName'] ?>
 
-    <td><?= $row['CheckOutDate'] ?></td>
+            </td>
 
-    <!-- LEVEL -->
-    <td>
+            <!-- CUSTOMER -->
+            <td>
 
-        <?php
+                <?= $row['CustomerName'] ?>
 
-        if($customerLevel == "VIP"){
+            </td>
 
-            echo "<span class='vip'>VIP</span>";
-        }
-        else if($customerLevel == "Regular"){
+            <!-- CHECK IN -->
+            <td>
 
-            echo "<span class='regular'>Regular</span>";
-        }
-        else{
+                <?= $row['CheckInDate'] ?>
 
-            echo "<span class='new'>New</span>";
-        }
+            </td>
 
-        ?>
+            <!-- CHECK OUT -->
+            <td>
 
-    </td>
+                <?= $row['CheckOutDate'] ?>
 
-    <!-- VOUCHER -->
-    <td>
+            </td>
 
-        <?php
+            <!-- STATUS -->
+            <td>
 
-        if(
-            $customerLevel == "VIP"
-            &&
-            $row['RoomTypeName'] == "Suite"
-        ){
+                <?php
 
-            echo "<span class='voucher'>
-                    Giảm 20%
-                  </span>";
-        }
-        else if($customerLevel == "Regular"){
+                if($row['TrangThai'] == "đã thanh toán"){
 
-            echo "<span class='voucher'>
-                    Giảm 5%
-                  </span>";
-        }
-        else{
+                    echo "
+                    <span class='paid'>
+                        Đã thanh toán
+                    </span>
+                    ";
+                }
+                else{
 
-            echo "-";
-        }
+                    echo "
+                    <span class='unpaid'>
+                        Chưa thanh toán
+                    </span>
+                    ";
+                }
 
-        ?>
+                ?>
 
-    </td>
+            </td>
 
-</tr>
+        </tr>
 
-<?php endwhile; ?>
+        <?php endwhile; ?>
 
-</table>
+    </table>
 
 </div>
+
+<!-- DETAIL MODAL -->
+<div id="bookingModal" class="modal">
+
+    <div class="modal-content booking-modal">
+
+        <!-- HEADER -->
+        <div class="modal-header">
+
+            <h3>Chi tiết phiếu đặt phòng</h3>
+
+            <span
+                class="close-btn"
+                onclick="closeBookingDetail()"
+            >
+                ×
+            </span>
+
+        </div>
+
+        <!-- GRID -->
+        <div class="booking-grid">
+
+            <div class="form-group">
+
+                <label>Mã đặt phòng</label>
+
+                <input
+                    type="text"
+                    id="detailBookingId"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Khách hàng</label>
+
+                <input
+                    type="text"
+                    id="detailCustomer"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Phòng</label>
+
+                <input
+                    type="text"
+                    id="detailRoom"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Loại phòng</label>
+
+                <input
+                    type="text"
+                    id="detailRoomType"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Ngày nhận</label>
+
+                <input
+                    type="text"
+                    id="detailCheckIn"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Ngày trả</label>
+
+                <input
+                    type="text"
+                    id="detailCheckOut"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Số người</label>
+
+                <input
+                    type="text"
+                    id="detailPeople"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Đơn giá</label>
+
+                <input
+                    type="text"
+                    id="detailPrice"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Trạng thái</label>
+
+                <input
+                    type="text"
+                    id="detailStatus"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function openBookingDetail(
+    bookingId,
+    customer,
+    room,
+    roomType,
+    checkIn,
+    checkOut,
+    people,
+    price,
+    status
+){
+
+    document.getElementById("bookingModal")
+        .classList.add("show");
+
+    document.getElementById("detailBookingId")
+        .value = bookingId;
+
+    document.getElementById("detailCustomer")
+        .value = customer;
+
+    document.getElementById("detailRoom")
+        .value = room;
+
+    document.getElementById("detailRoomType")
+        .value = roomType;
+
+    document.getElementById("detailCheckIn")
+        .value = checkIn;
+
+    document.getElementById("detailCheckOut")
+        .value = checkOut;
+
+    document.getElementById("detailPeople")
+        .value = people;
+
+    document.getElementById("detailPrice")
+        .value = price;
+
+    document.getElementById("detailStatus")
+        .value = status;
+}
+
+function closeBookingDetail(){
+
+    document.getElementById("bookingModal")
+        .classList.remove("show");
+}
+
+</script>
+
+</body>
+</html>
