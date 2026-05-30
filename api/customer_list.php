@@ -1,32 +1,36 @@
 ﻿<?php
+require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/helpers.php';
-$conn = mysqli_connect("localhost","root","","hotel");
+require_once __DIR__ . '/../includes/auth.php';
 
-$keyword = isset($_GET['keyword']) 
-? mysqli_real_escape_string($conn, $_GET['keyword']) 
-: "";
+$keyword = trim($_GET['keyword'] ?? '');
+$type    = $_GET['type'] ?? '';
 
-$type = isset($_GET['type']) 
-? $_GET['type'] 
-: "";
+$sql    = "SELECT * FROM customer WHERE 1=1";
+$params = [];
+$types  = '';
 
-$sql = "SELECT * FROM customer WHERE 1";
-
-if ($keyword != "") {
-
-    $sql .= " AND (
-        LOWER(CustomerName) LIKE LOWER('%$keyword%') 
-        OR PhoneNumber LIKE '%$keyword%'
-        OR LOWER(Email) LIKE LOWER('%$keyword%')
-    )";
+if ($keyword !== '') {
+    $sql   .= " AND (CustomerName LIKE ? OR PhoneNumber LIKE ? OR Email LIKE ?)";
+    $like   = '%' . $keyword . '%';
+    $params[] = $like;
+    $params[] = $like;
+    $params[] = $like;
+    $types   .= 'sss';
 }
 
-if ($type != "") {
-
-    $sql .= " AND CustomerType='$type'";
+if ($type !== '') {
+    $sql     .= " AND CustomerType = ?";
+    $params[] = $type;
+    $types   .= 's';
 }
 
-$result = mysqli_query($conn, $sql);
+$stmt = $conn->prepare($sql);
+if ($params) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +60,7 @@ $result = mysqli_query($conn, $sql);
                 type="text"
                 name="keyword"
                 placeholder="Tìm khách..."
-                value="<?= $keyword ?>"
+                value="<?= e($keyword) ?>"
             >
 
             <select name="type">
@@ -127,20 +131,20 @@ $result = mysqli_query($conn, $sql);
 
             <tr>
 
-                <td><?= $row['CustomerId'] ?></td>
+                <td><?= e($row['CustomerId']) ?></td>
 
-                <td><?= $row['CustomerName'] ?></td>
+                <td><?= e($row['CustomerName']) ?></td>
 
-                <td><?= $row['PhoneNumber'] ?></td>
+                <td><?= e($row['PhoneNumber']) ?></td>
 
-                <td><?= $row['Email'] ?></td>
+                <td><?= e($row['Email']) ?></td>
 
                 <td>
-    <?= $row['StayCount'] ?>
+    <?= e($row['StayCount']) ?>
 </td>
 
 <td>
-    <?= number_format($row['TotalSpent']) ?>đ
+    <?= number_format((float)$row['TotalSpent']) ?>đ
 </td>
 
 <td>
@@ -171,7 +175,7 @@ else{
                 <td class="action">
 
                     <a
-                        href="edit_customer.php?id=<?= $row['CustomerId'] ?>"
+                        href="edit_customer.php?id=<?= e($row['CustomerId']) ?>"
                         class="edit"
                     >
                         Sửa

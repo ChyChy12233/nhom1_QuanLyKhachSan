@@ -16,7 +16,7 @@ $_role = $_SESSION['role'] ?? '';
   <a href="/nhom1_QuanLyKhachSan/api/customer_list.php" data-title="Quản lý khách hàng">
     <i data-lucide="user"></i> Quản lý khách hàng
   </a>
-  <a href="/nhom1_QuanLyKhachSan/api/booking_checkin.php" data-title="Quản lý đặt phòng">
+  <a href="/nhom1_QuanLyKhachSan/api/booking_list.php" data-title="Quản lý đặt phòng">
     <i data-lucide="calendar-check"></i> Quản lý đặt phòng
   </a>
   <a href="/nhom1_QuanLyKhachSan/api/invoice_list.php" data-title="Quản lý hóa đơn">

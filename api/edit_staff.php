@@ -1,9 +1,19 @@
 ﻿<?php
-$conn = mysqli_connect("localhost","root","","hotel");
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_role(['manager', 'admin']);
 
-$id = $_GET['id'];
-$result = mysqli_query($conn, "SELECT * FROM staff WHERE StaffId='$id'");
-$row = mysqli_fetch_assoc($result);
+$id = $_GET['id'] ?? '';
+$stmt = $conn->prepare("SELECT * FROM staff WHERE StaffId = ?");
+$stmt->bind_param('s', $id);
+$stmt->execute();
+$row = $stmt->get_result()->fetch_assoc();
+
+if (!$row) {
+    header('Location: staff_list.php?error=not_found');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,31 +31,31 @@ $row = mysqli_fetch_assoc($result);
 
     <form action="update_staff.php" method="POST">
 
-        <input type="hidden" name="StaffId" value="<?= $row['StaffId'] ?>">
+        <input type="hidden" name="StaffId" value="<?= e($row['StaffId']) ?>">
 
         <div class="input-group">
             <label>Họ và tên</label>
-            <input type="text" name="StaffName" value="<?= $row['StaffName'] ?>" required>
+            <input type="text" name="StaffName" value="<?= e($row['StaffName']) ?>" required>
         </div>
 
         <div class="input-group">
             <label>SĐT</label>
-            <input type="text" name="PhoneNumber" value="<?= $row['PhoneNumber'] ?>" required>
+            <input type="text" name="PhoneNumber" value="<?= e($row['PhoneNumber']) ?>" required>
         </div>
 
         <div class="input-group">
             <label>Email</label>
-            <input type="email" name="Email" value="<?= $row['Email'] ?>" required>
+            <input type="email" name="Email" value="<?= e($row['Email']) ?>" required>
         </div>
 
         <div class="input-group">
             <label>CCCD</label>
-            <input type="text" name="CCCD" value="<?= $row['CCCD'] ?>" required>
+            <input type="text" name="CCCD" value="<?= e($row['CCCD']) ?>" required>
         </div>
 
         <div class="input-group">
             <label>Ngày sinh</label>
-            <input type="date" name="Birthday" value="<?= $row['Birthday'] ?>">
+            <input type="date" name="Birthday" value="<?= e($row['Birthday']) ?>">
         </div>
 
         <div class="input-group">
@@ -66,7 +76,7 @@ $row = mysqli_fetch_assoc($result);
 
         <div class="input-group">
             <label>Username</label>
-            <input type="text" name="Username" value="<?= $row['Username'] ?>" required>
+            <input type="text" name="Username" value="<?= e($row['Username']) ?>" required>
         </div>
 
         <div class="input-group">

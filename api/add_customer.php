@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿<?php
+require_once __DIR__ . '/../includes/auth.php';
+?>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">

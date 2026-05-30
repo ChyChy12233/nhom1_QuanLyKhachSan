@@ -1,27 +1,31 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/db.php';
 
-$conn = mysqli_connect("localhost", "root", "", "hotel");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: index.php');
+    exit;
+}
 
 // LẤY DỮ LIỆU
-$username = trim($_POST['username']);
-$password = trim($_POST['password']);
-$role = $_POST['role'];
+$username = trim($_POST['username'] ?? '');
+$password = trim($_POST['password'] ?? '');
+$role     = $_POST['role'] ?? '';
 
-// LẤY USER THEO USERNAME
-$sql = "SELECT * FROM users WHERE username='$username'";
-$result = mysqli_query($conn, $sql);
+// LẤY USER THEO USERNAME — dùng bảng `staff` (bảng `users` đã deprecated)
+$stmt = $conn->prepare("SELECT StaffId, Username, Password, Role FROM staff WHERE Username = ?");
+$stmt->bind_param('s', $username);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
 
 // KIỂM TRA CÓ USER KHÔNG
-if (mysqli_num_rows($result) > 0) {
-
-    $user = mysqli_fetch_assoc($result);
+if ($user) {
 
     // CHECK PASSWORD
-    if (password_verify($password, $user['password'])) {
+    if (password_verify($password, $user['Password'])) {
 
         // CHECK ROLE
-        if ($user['role'] != $role) {
+        if ($user['Role'] != $role) {
             echo "<script>
                 alert('Sai vai trò!');
                 window.location='index.php';
@@ -30,8 +34,9 @@ if (mysqli_num_rows($result) > 0) {
         }
 
         // LOGIN SUCCESS
-        $_SESSION['user'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
+        $_SESSION['user']     = $user['Username'];
+        $_SESSION['role']     = $user['Role'];
+        $_SESSION['staff_id'] = $user['StaffId'];
 
         header("Location: dashboard.php");
         exit();

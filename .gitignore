@@ -3,3 +3,5 @@ test.php
 test_hash.php
 sql/hotel.sql
 skill.md
+.claude/settings.json
+context.md

@@ -1,8 +1,11 @@
 ﻿<?php
-$conn = mysqli_connect("localhost","root","","hotel");
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_role(['manager', 'admin']);
 
 // lấy loại phòng
-$types = mysqli_query($conn, "SELECT * FROM room_type");
+$types = $conn->query("SELECT * FROM room_type");
 ?>
 
 <!DOCTYPE html>
@@ -27,9 +30,9 @@ $types = mysqli_query($conn, "SELECT * FROM room_type");
     <div class="input-group">
         <label>Loại phòng</label>
         <select name="RoomTypeId">
-            <?php while($t = mysqli_fetch_assoc($types)): ?>
-            <option value="<?= $t['RoomTypeId'] ?>">
-                <?= $t['RoomTypeName'] ?>
+            <?php while($t = $types->fetch_assoc()): ?>
+            <option value="<?= e($t['RoomTypeId']) ?>">
+                <?= e($t['RoomTypeName']) ?>
             </option>
             <?php endwhile; ?>
         </select>
@@ -38,7 +41,7 @@ $types = mysqli_query($conn, "SELECT * FROM room_type");
     <div class="input-group">
         <label>Trạng thái</label>
         <select name="RoomStatus">
-            <option value="Phòng trống">Phòng trống</option>
+            <option value="Trống">Trống</option>
             <option value="Phòng đã đặt">Phòng đã đặt</option>
             <option value="Phòng đang thuê">Phòng đang thuê</option>
         </select>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: room_usage.php');
@@ -36,8 +37,8 @@ try {
     $stmt->bind_param('ss', $checkOut, $rcId);
     $stmt->execute();
 
-    // Free the room — use 'Phòng trống' to match UI filter in checkin.php
-    $roomStmt = $conn->prepare("UPDATE room SET RoomStatus='Phòng trống' WHERE RoomId=?");
+    // Free the room — canonical empty status is 'Trống' (DB default + lifecycle)
+    $roomStmt = $conn->prepare("UPDATE room SET RoomStatus='Trống' WHERE RoomId=?");
     $roomStmt->bind_param('s', $roomId);
     $roomStmt->execute();
 

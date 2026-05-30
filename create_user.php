@@ -1,11 +1,6 @@
 ﻿<?php
-session_start();
-
-// chỉ admin được vào
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-    echo "Bạn không có quyền!";
-    exit();
-}
+require_once __DIR__ . '/includes/auth.php';
+require_role(['admin']);
 ?>
 
 <!DOCTYPE html>

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: booking_checkin.php');
@@ -48,7 +49,7 @@ try {
     $roomStmt->execute();
 
     $conn->commit();
-    header('Location: booking_checkin.php?ok=booked');
+    header('Location: booking_list.php?ok=booked');
 } catch (Exception $e) {
     $conn->rollback();
     header('Location: booking_checkin.php?error=' . urlencode($e->getMessage()));

@@ -1,0 +1,265 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
+body { background: #f4f6f9; padding: 24px; }
+
+/* Breadcrumb */
+.breadcrumb {
+  font-size: 12px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.breadcrumb a { color: #9ca3af; text-decoration: none; }
+.breadcrumb span { color: #2563eb; }
+
+/* Page header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.page-header h1 { font-size: 26px; font-weight: 700; color: #111827; }
+
+.btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-new:hover { background: #1d4ed8; }
+
+/* Filters */
+.filters {
+  background: white;
+  padding: 14px 18px;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.filter-search input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  outline: none;
+}
+.filter-search input:focus { border-color: #2563eb; }
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+.filters select {
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  min-width: 160px;
+  outline: none;
+  background: white;
+}
+.filters select:focus { border-color: #2563eb; }
+.btn-filter {
+  padding: 10px 18px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-filter:hover { background: #e5e7eb; }
+
+/* Alerts */
+.alert-ok  { background: #d1fae5; color: #065f46; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+.alert-err { background: #fee2e2; color: #991b1b; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: #374151;
+}
+.stat-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.stat-count { font-weight: 700; }
+.dot-green  { background: #22c55e; }
+.dot-blue   { background: #3b82f6; }
+.dot-yellow { background: #f59e0b; }
+.dot-red    { background: #ef4444; }
+
+/* Room grid */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 1100px) { .room-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px)  { .room-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* Room card */
+.room-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2px;
+}
+.room-number { font-size: 20px; font-weight: 700; color: #111827; }
+.room-type-label {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* Status badges */
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.badge-available { background: #dcfce7; color: #15803d; }
+.badge-occupied  { background: #dbeafe; color: #1d4ed8; }
+.badge-reserved  { background: #ffedd5; color: #c2410c; }
+.badge-cleaning  { background: #fef9c3; color: #a16207; }
+
+/* Info rows */
+.info-grid { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.info-row  { display: flex; justify-content: space-between; font-size: 13px; }
+.info-label { color: #6b7280; }
+.info-value { font-weight: 600; color: #111827; }
+.info-value.price { color: #2563eb; }
+
+/* Actions */
+.card-actions { display: flex; gap: 8px; margin-top: 14px; }
+
+.btn-action {
+  flex: 1;
+  padding: 9px 6px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.15s;
+}
+.btn-checkin  { background: #2563eb; color: white; }
+.btn-checkin:hover { background: #1d4ed8; }
+.btn-receive  { background: #1e293b; color: white; }
+.btn-receive:hover { background: #0f172a; }
+.btn-clean-done {
+  background: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+.btn-clean-done:hover { background: #f9fafb; }
+
+/* Icon-only buttons for occupied rooms */
+.btn-icon {
+  padding: 8px 10px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-icon:hover { background: #e5e7eb; }
+.btn-icon.danger { color: #dc2626; background: #fee2e2; }
+.btn-icon.danger:hover { background: #fecaca; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+.pagination a, .pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+.pagination a:hover { background: #f3f4f6; }
+.pagination .pg-active { background: #2563eb; color: white; border-color: #2563eb; }
+.pagination .pg-disabled { color: #d1d5db; pointer-events: none; background: #f9fafb; }
+
+/* No rooms message */
+.no-data {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-size: 15px;
+  background: white;
+  border-radius: 12px;
+}

@@ -37,11 +37,8 @@ $role = $_SESSION['role'];
   <a href="api/customer_list.php" target="mainFrame" data-title="Quản lý khách hàng">
     <i data-lucide="user"></i> Quản lý khách hàng
   </a>
-  <a href="api/booking_checkin.php" target="mainFrame" data-title="Quản lý đặt phòng">
+  <a href="api/booking_list.php" target="mainFrame" data-title="Quản lý đặt phòng">
     <i data-lucide="calendar-check"></i> Quản lý đặt phòng
-  </a>
-  <a href="api/invoice_list.php" target="mainFrame" data-title="Quản lý hóa đơn">
-    <i data-lucide="file-text"></i> Quản lý hóa đơn
   </a>
   <a href="api/room_usage.php" target="mainFrame" data-title="Quản lý sử dụng phòng">
     <i data-lucide="bed"></i> Quản lý sử dụng phòng
@@ -68,6 +65,9 @@ $role = $_SESSION['role'];
     <a href="api/facility.php" target="mainFrame" data-title="Quản lý cơ sở vật chất">
       <i data-lucide="building"></i> Quản lý cơ sở vật chất
     </a>
+    <a href="api/invoice_list.php" target="mainFrame" data-title="Quản lý hóa đơn">
+      <i data-lucide="file-text"></i> Quản lý hóa đơn
+    </a>
     <a href="api/report.php" target="mainFrame" data-title="Báo cáo thống kê">
       <i data-lucide="bar-chart"></i> Báo cáo thống kê
     </a>
@@ -89,7 +89,7 @@ $role = $_SESSION['role'];
 
   <div class="topbar">
     <h1 id="pageTitle">Dashboard</h1>
-    <div>👤 <?php echo $user; ?> (<?php echo $role; ?>)</div>
+    <div>👤 <?= htmlspecialchars($user, ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($role, ENT_QUOTES, 'UTF-8') ?>)</div>
   </div>
 
   <iframe id="mainFrame" name="mainFrame" src="api/home.php"></iframe>

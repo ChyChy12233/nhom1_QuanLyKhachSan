@@ -1,9 +1,18 @@
 ﻿<?php
-$conn = mysqli_connect("localhost","root","","hotel");
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth.php';
 
-$id = $_GET['id'];
-$result = mysqli_query($conn, "SELECT * FROM customer WHERE CustomerId='$id'");
-$row = mysqli_fetch_assoc($result);
+$id = $_GET['id'] ?? '';
+$stmt = $conn->prepare("SELECT * FROM customer WHERE CustomerId = ?");
+$stmt->bind_param('s', $id);
+$stmt->execute();
+$row = $stmt->get_result()->fetch_assoc();
+
+if (!$row) {
+    header('Location: customer_list.php?error=not_found');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,31 +30,31 @@ $row = mysqli_fetch_assoc($result);
 
 <form action="update_customer.php" method="POST">
 
-    <input type="hidden" name="CustomerId" value="<?= $row['CustomerId'] ?>">
+    <input type="hidden" name="CustomerId" value="<?= e($row['CustomerId']) ?>">
 
     <div class="input-group">
         <label>Tên khách hàng</label>
-        <input type="text" name="CustomerName" value="<?= $row['CustomerName'] ?>" required>
+        <input type="text" name="CustomerName" value="<?= e($row['CustomerName']) ?>" required>
     </div>
 
     <div class="input-group">
         <label>SĐT</label>
-        <input type="text" name="PhoneNumber" value="<?= $row['PhoneNumber'] ?>" required>
+        <input type="text" name="PhoneNumber" value="<?= e($row['PhoneNumber']) ?>" required>
     </div>
 
     <div class="input-group">
         <label>Email</label>
-        <input type="email" name="Email" value="<?= $row['Email'] ?>" required>
+        <input type="email" name="Email" value="<?= e($row['Email']) ?>" required>
     </div>
 
     <div class="input-group">
         <label>CCCD</label>
-        <input type="text" name="CCCD" value="<?= $row['CCCD'] ?>" required>
+        <input type="text" name="CCCD" value="<?= e($row['CCCD']) ?>" required>
     </div>
 
     <div class="input-group">
         <label>Ngày sinh</label>
-        <input type="date" name="Birthday" value="<?= $row['Birthday'] ?>" required>
+        <input type="date" name="Birthday" value="<?= e($row['Birthday']) ?>" required>
     </div>
 
     <div class="input-group">
@@ -66,7 +75,7 @@ $row = mysqli_fetch_assoc($result);
 
     <div class="input-group">
         <label>Địa chỉ</label>
-        <input type="text" name="CustomerAddress" value="<?= $row['CustomerAddress'] ?>" required>
+        <input type="text" name="CustomerAddress" value="<?= e($row['CustomerAddress']) ?>" required>
     </div>
 
     <button type="submit">Cập nhật</button>

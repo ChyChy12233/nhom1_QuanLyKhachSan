@@ -1,11 +1,13 @@
 ﻿<?php
-$conn = mysqli_connect("localhost","root","","hotel");
+require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 // lấy khách
-$customers = mysqli_query($conn, "SELECT * FROM customer");
+$customers = $conn->query("SELECT * FROM customer ORDER BY CustomerName");
 
 // lấy phòng trống
-$rooms = mysqli_query($conn, "SELECT * FROM room WHERE RoomStatus='Phòng trống'");
+$rooms = $conn->query("SELECT * FROM room WHERE RoomStatus IN ('Trống','Phòng trống') ORDER BY RoomNumber");
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +27,9 @@ $rooms = mysqli_query($conn, "SELECT * FROM room WHERE RoomStatus='Phòng trốn
     <div class="input-group">
         <label>Khách hàng</label>
         <select name="CustomerId" required>
-            <?php while($c = mysqli_fetch_assoc($customers)): ?>
-            <option value="<?= $c['CustomerId'] ?>">
-                <?= $c['CustomerName'] ?> - <?= $c['PhoneNumber'] ?>
+            <?php while($c = $customers->fetch_assoc()): ?>
+            <option value="<?= e($c['CustomerId']) ?>">
+                <?= e($c['CustomerName']) ?> - <?= e($c['PhoneNumber']) ?>
             </option>
             <?php endwhile; ?>
         </select>
@@ -36,9 +38,9 @@ $rooms = mysqli_query($conn, "SELECT * FROM room WHERE RoomStatus='Phòng trốn
     <div class="input-group">
         <label>Phòng</label>
         <select name="RoomId" required>
-            <?php while($r = mysqli_fetch_assoc($rooms)): ?>
-            <option value="<?= $r['RoomId'] ?>">
-                Phòng <?= $r['RoomNumber'] ?>
+            <?php while($r = $rooms->fetch_assoc()): ?>
+            <option value="<?= e($r['RoomId']) ?>">
+                Phòng <?= e($r['RoomNumber']) ?>
             </option>
             <?php endwhile; ?>
         </select>
