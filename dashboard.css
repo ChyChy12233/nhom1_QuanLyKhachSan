@@ -128,12 +128,74 @@ body {
   font-size: 28px;
 }
 
-.topbar div {
+/* (selector cũ đã bỏ — styling chuyển sang .user-chip) */
+
+.topbar-user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+/* User info chip */
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: white;
   padding: 8px 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.user-chip i {
+  width: 18px;
+  height: 18px;
+  color: #0a2540;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.role-badge {
+  background: #e8edf5;
+  color: #0a2540;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+/* Logout button */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.logout-btn i {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239,68,68,0.45);
 }
 
 /* ================= CARDS ================= */

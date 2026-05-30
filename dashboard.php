@@ -89,7 +89,17 @@ $role = $_SESSION['role'];
 
   <div class="topbar">
     <h1 id="pageTitle">Dashboard</h1>
-    <div>👤 <?= htmlspecialchars($user, ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($role, ENT_QUOTES, 'UTF-8') ?>)</div>
+    <div class="topbar-user">
+      <div class="user-chip">
+        <i data-lucide="user-circle-2"></i>
+        <span class="user-name"><?= htmlspecialchars($user, ENT_QUOTES, 'UTF-8') ?></span>
+        <span class="role-badge"><?= htmlspecialchars($role, ENT_QUOTES, 'UTF-8') ?></span>
+      </div>
+      <a href="logout.php" class="logout-btn">
+        <i data-lucide="log-out"></i>
+        Đăng xuất
+      </a>
+    </div>
   </div>
 
   <iframe id="mainFrame" name="mainFrame" src="api/home.php"></iframe>
