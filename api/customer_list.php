@@ -1,4 +1,5 @@
 ﻿<?php
+require_once __DIR__ . '/../includes/helpers.php';
 $conn = mysqli_connect("localhost","root","","hotel");
 
 $keyword = isset($_GET['keyword']) 

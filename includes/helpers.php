@@ -11,6 +11,5 @@ function format_date($d) {
 }
 
 function gen_id($prefix) {
-    // Match existing pattern: KH190, R804, B7048, RC3295
     return $prefix . random_int(100, 9999);
 }
